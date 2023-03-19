@@ -1,6 +1,7 @@
 # LWJGL2.9.3-Controller-Patch
 Completely overhauls the LWJGL 2.9.3 Controllers API, including updated libraries, better compatibility, and better flexibility.
 
+
 Required Libraries:
 
 LWJGL 2.9.3 (Not confirmed for other LWJGL 2 versions) -> https://legacy.lwjgl.org/download.php.html
@@ -17,8 +18,10 @@ JInput OSX Plugin 2.0.9 -> https://search.maven.org/search?q=a:osx-plugin
 
 JInput Linux Plugin 2.0.9 -> https://search.maven.org/search?q=a:linux-plugin
 
+
 Installation:
 Replace the given classes into their respective packages within LWJGL.
+
 
 Usage:
 Read in-code documentation via applying the given source jar.
