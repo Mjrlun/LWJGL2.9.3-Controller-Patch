@@ -20,7 +20,7 @@ JInput Linux Plugin 2.0.9 -> https://search.maven.org/search?q=a:linux-plugin
 
 
 Installation:
-Replace the given classes into their respective packages within LWJGL.
+Replace the given classes into their respective packages within LWJGL. Import libraries nominally.
 
 
 Usage:
