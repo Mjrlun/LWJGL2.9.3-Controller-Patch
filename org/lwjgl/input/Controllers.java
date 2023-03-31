@@ -32,7 +32,6 @@
 package org.lwjgl.input;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,134 +68,121 @@ public class Controllers {
 
 	/** The currently assigned controller. */
 	private static Controller currentController = null;
-	
+
 	/** This class' logger. */
 	private static final Logger logger;
-	
+
 	/** Whether this class is in Single-Controller mode. */
 	private static boolean monoControllerMode = false;
-	
+
 	/** The Current Controller's active events. */
 	private static final ArrayList<ControllerEvent> currControllerEvents = new ArrayList<ControllerEvent>();
 
 	/* CONTROLLER GENERICS AND FLEXIBILITY */
-	
+
 	/**
 	 * Assigns a controller by the given name.
 	 */
-	public static boolean assignController(String name)
-	{
-		if (Controllers.controllers.size() > 0 && Controllers.controllers.containsKey(name))
-		{
+	public static boolean assignController(String name) {
+		if (Controllers.controllers.size() > 0 && Controllers.controllers.containsKey(name)) {
 			currentController = controllers.get(name);
 			currControllerEvents.clear();
 			return true;
 		}
 		return false;
 	}
-	
-	/** 
+
+	/**
 	 * Attempts to assign the Current Controller to the default.
 	 */
-	public static boolean assignDefaultController()
-	{
+	public static boolean assignDefaultController() {
 		if (Controllers.controllers.size() == 0)
 			return false;
 		currentController = Controllers.controllers.values().iterator().next();
 		return true;
 	}
-	
+
 	/**
 	 * Gets the number of available controllers.
 	 */
-	public static int getControllerCount()
-	{
+	public static int getControllerCount() {
 		return controllers.size();
 	}
-	
+
 	/**
 	 * Returns if the Current Controller exists.
 	 */
-	public static boolean currentControllerExists()
-	{
+	public static boolean currentControllerExists() {
 		return currentController != null;
 	}
-	
+
 	/**
-	 * By setting state to TRUE, all calls to {@link #getAllEvents} will instead return {@link #getCurrentControllerEvents}.
+	 * By setting state to TRUE, all calls to {@link #getAllEvents} will instead
+	 * return {@link #getCurrentControllerEvents}.
 	 */
-	public static void enableMonoControllerMode(boolean state)
-	{
+	public static void enableMonoControllerMode(boolean state) {
 		monoControllerMode = true;
 	}
-	
+
 	/**
 	 * Returns a Collection of all available controllers.
 	 */
-	public static List<JInputController> getControllers()
-	{
+	public static List<JInputController> getControllers() {
 		return Collections.unmodifiableList(new ArrayList<JInputController>(controllers.values()));
 	}
-	
+
 	/**
 	 * Returns a Collection of all available controller names.
 	 */
-	public static List<String> getControllerNames()
-	{
+	public static List<String> getControllerNames() {
 		return Collections.unmodifiableList(new ArrayList<String>(controllers.keySet()));
 	}
-	
+
 	/**
 	 * Returns all current {@link ControllerEvent}s for the Current Controller.
 	 */
-	public static List<ControllerEvent> getCurrentControllerEvents()
-	{
-		if (currControllerEvents.size() == 0)
-		{
+	public static List<ControllerEvent> getCurrentControllerEvents() {
+		if (currControllerEvents.size() == 0) {
 			for (ControllerEvent event : events)
 				if (event.getSource() == currentController)
 					currControllerEvents.add(event);
 		}
 		return Collections.unmodifiableList(currControllerEvents);
 	}
-	
+
 	/**
 	 * Returns all current {@link ControllerEvent}s from all available Controllers.
-	 * If monoControllerMode is enabled, will return {@link #getCurrentControllerEvents}
+	 * If monoControllerMode is enabled, will return
+	 * {@link #getCurrentControllerEvents}
 	 */
-	public static List<ControllerEvent> getAllEvents()
-	{
+	public static List<ControllerEvent> getAllEvents() {
 		if (monoControllerMode)
 			return getCurrentControllerEvents();
 		else
 			return Collections.unmodifiableList(events);
 	}
-	
+
 	/**
 	 * Returns the current controller assigned by {@link #assignController}
 	 */
-	public static Controller getCurrentController()
-	{
+	public static Controller getCurrentController() {
 		return currentController;
 	}
-	
+
 	/**
 	 * Returns the name of the Current Controller.
 	 */
-	public static String getCurrentControllerName()
-	{
+	public static String getCurrentControllerName() {
 		return currentController.getName();
 	}
-	
+
 	/* CONTROLLER AXIS POLLING */
-	
+
 	/**
 	 * Puts the requested stick's vector into the provided vec2.
 	 */
-	public static void getStickVector(Side side, float[] vec2)
-	{
-		switch(side)
-		{
+	public static void getStickVector(Side side, float[] vec2) {
+		switch (side) {
 		case L:
 			vec2[0] = currentController.getXAxisValue();
 			vec2[1] = currentController.getYAxisValue();
@@ -207,11 +193,9 @@ public class Controllers {
 			return;
 		}
 	}
-	
-	public static float getTriggerState(Side side)
-	{
-		switch(side)
-		{
+
+	public static float getTriggerState(Side side) {
+		switch (side) {
 		case L:
 			return currentController.getZAxisValue();
 		case R:
@@ -219,11 +203,9 @@ public class Controllers {
 		}
 		return 0F;
 	}
-	
-	public static float getDPadState(Axis axis)
-	{
-		switch(axis)
-		{
+
+	public static float getDPadState(Axis axis) {
+		switch (axis) {
 		case X:
 			return currentController.getPovX();
 		case Y:
@@ -231,16 +213,14 @@ public class Controllers {
 		}
 		return 0F;
 	}
-	
+
 	/* GENERIC CONTROLLER AXIS POLLING */
-	
+
 	/**
 	 * Puts the requested stick's vector into the provided vec2.
 	 */
-	public static void getStickVector(Controller controller, Side side, float[] vec2)
-	{
-		switch(side)
-		{
+	public static void getStickVector(Controller controller, Side side, float[] vec2) {
+		switch (side) {
 		case L:
 			vec2[0] = controller.getXAxisValue();
 			vec2[1] = controller.getYAxisValue();
@@ -251,11 +231,9 @@ public class Controllers {
 			return;
 		}
 	}
-	
-	public static float getTriggerState(Controller controller, Side side)
-	{
-		switch(side)
-		{
+
+	public static float getTriggerState(Controller controller, Side side) {
+		switch (side) {
 		case L:
 			return controller.getZAxisValue();
 		case R:
@@ -263,11 +241,9 @@ public class Controllers {
 		}
 		return 0F;
 	}
-	
-	public static float getDPadState(Controller controller, Axis axis)
-	{
-		switch(axis)
-		{
+
+	public static float getDPadState(Controller controller, Axis axis) {
+		switch (axis) {
 		case X:
 			return controller.getPovX();
 		case Y:
@@ -275,16 +251,13 @@ public class Controllers {
 		}
 		return 0F;
 	}
-	
+
 	/* CONTROLLER TUNING METHODS */
-	
-	public static void setStickDeadzone(Side side, Axis axis, float amount)
-	{
-		switch(side)
-		{
+
+	public static void setStickDeadzone(Side side, Axis axis, float amount) {
+		switch (side) {
 		case L:
-			switch(axis)
-			{
+			switch (axis) {
 			case X:
 				currentController.setXAxisDeadZone(clamp(amount));
 				return;
@@ -293,8 +266,7 @@ public class Controllers {
 				return;
 			}
 		case R:
-			switch(axis)
-			{
+			switch (axis) {
 			case X:
 				currentController.setRXAxisDeadZone(clamp(amount));
 				return;
@@ -304,11 +276,9 @@ public class Controllers {
 			}
 		}
 	}
-	
-	public static void setTriggerDeadzone(Side side, float amount)
-	{
-		switch(side)
-		{
+
+	public static void setTriggerDeadzone(Side side, float amount) {
+		switch (side) {
 		case L:
 			currentController.setZAxisDeadZone(clamp(amount));
 			return;
@@ -317,9 +287,8 @@ public class Controllers {
 			return;
 		}
 	}
-	
-	public static void setControllerSettings(float leftXDeadzone, float leftYDeadzone, float rightXDeadzone, float rightYDeadzone, float leftTriggerDeadzone, float rightTriggerDeadzone)
-	{
+
+	public static void setControllerSettings(float leftXDeadzone, float leftYDeadzone, float rightXDeadzone, float rightYDeadzone, float leftTriggerDeadzone, float rightTriggerDeadzone) {
 		setStickDeadzone(Side.L, Axis.X, leftXDeadzone);
 		setStickDeadzone(Side.L, Axis.Y, leftYDeadzone);
 		setStickDeadzone(Side.R, Axis.X, rightXDeadzone);
@@ -327,16 +296,13 @@ public class Controllers {
 		setTriggerDeadzone(Side.L, leftTriggerDeadzone);
 		setTriggerDeadzone(Side.R, rightTriggerDeadzone);
 	}
-	
+
 	/* GENERIC CONTROLLER TUNING METHODS */
-	
-	public static void setStickDeadzone(Controller controller, Side side, Axis axis, float amount)
-	{
-		switch(side)
-		{
+
+	public static void setStickDeadzone(Controller controller, Side side, Axis axis, float amount) {
+		switch (side) {
 		case L:
-			switch(axis)
-			{
+			switch (axis) {
 			case X:
 				controller.setXAxisDeadZone(clamp(amount));
 				return;
@@ -345,8 +311,7 @@ public class Controllers {
 				return;
 			}
 		case R:
-			switch(axis)
-			{
+			switch (axis) {
 			case X:
 				controller.setRXAxisDeadZone(clamp(amount));
 				return;
@@ -356,11 +321,9 @@ public class Controllers {
 			}
 		}
 	}
-	
-	public static void setTriggerDeadzone(Controller controller, Side side, float amount)
-	{
-		switch(side)
-		{
+
+	public static void setTriggerDeadzone(Controller controller, Side side, float amount) {
+		switch (side) {
 		case L:
 			controller.setZAxisDeadZone(clamp(amount));
 			return;
@@ -369,9 +332,8 @@ public class Controllers {
 			return;
 		}
 	}
-	
-	public static void setControllerSettings(Controller controller, float leftXDeadzone, float leftYDeadzone, float rightXDeadzone, float rightYDeadzone, float leftTriggerDeadzone, float rightTriggerDeadzone)
-	{
+
+	public static void setControllerSettings(Controller controller, float leftXDeadzone, float leftYDeadzone, float rightXDeadzone, float rightYDeadzone, float leftTriggerDeadzone, float rightTriggerDeadzone) {
 		setStickDeadzone(controller, Side.L, Axis.X, leftXDeadzone);
 		setStickDeadzone(controller, Side.L, Axis.Y, leftYDeadzone);
 		setStickDeadzone(controller, Side.R, Axis.X, rightXDeadzone);
@@ -379,24 +341,20 @@ public class Controllers {
 		setTriggerDeadzone(controller, Side.L, leftTriggerDeadzone);
 		setTriggerDeadzone(controller, Side.R, rightTriggerDeadzone);
 	}
-	
+
 	/* CONTROLLER GET TUNING METHODS */
-	
-	public static float getStickDeadzone(Side side, Axis axis)
-	{
-		switch(side)
-		{
+
+	public static float getStickDeadzone(Side side, Axis axis) {
+		switch (side) {
 		case L:
-			switch(axis)
-			{
+			switch (axis) {
 			case X:
 				return currentController.getXAxisDeadZone();
 			case Y:
 				return currentController.getYAxisDeadZone();
 			}
 		case R:
-			switch(axis)
-			{
+			switch (axis) {
 			case X:
 				return currentController.getRXAxisDeadZone();
 			case Y:
@@ -405,11 +363,9 @@ public class Controllers {
 		}
 		return 0F;
 	}
-	
-	public static float getTriggerDeadzone(Side side)
-	{
-		switch(side)
-		{
+
+	public static float getTriggerDeadzone(Side side) {
+		switch (side) {
 		case L:
 			return currentController.getZAxisDeadZone();
 		case R:
@@ -417,24 +373,20 @@ public class Controllers {
 		}
 		return 0F;
 	}
-	
+
 	/* GENERIC CONTROLLER GET TUNING METHODS */
-	
-	public static float getStickDeadzone(Controller controller, Side side, Axis axis)
-	{
-		switch(side)
-		{
+
+	public static float getStickDeadzone(Controller controller, Side side, Axis axis) {
+		switch (side) {
 		case L:
-			switch(axis)
-			{
+			switch (axis) {
 			case X:
 				return controller.getXAxisDeadZone();
 			case Y:
 				return controller.getYAxisDeadZone();
 			}
 		case R:
-			switch(axis)
-			{
+			switch (axis) {
 			case X:
 				return controller.getRXAxisDeadZone();
 			case Y:
@@ -443,11 +395,9 @@ public class Controllers {
 		}
 		return 0F;
 	}
-	
-	public static float getTriggerDeadzone(Controller controller, Side side)
-	{
-		switch(side)
-		{
+
+	public static float getTriggerDeadzone(Controller controller, Side side) {
+		switch (side) {
 		case L:
 			return controller.getZAxisDeadZone();
 		case R:
@@ -455,99 +405,95 @@ public class Controllers {
 		}
 		return 0F;
 	}
-	
+
 	/* RUMBLER METHODS */
-	
+
 	/**
 	 * Sets rumbling at the given strength.
 	 */
-	public static void rumbleController(String name, float strength)
-	{
+	public static void rumbleController(String name, float strength) {
 		currentController.setRumblerStrength(name, clamp(strength));
 	}
-	
+
 	/**
 	 * Sets rumbling at the given strength for the entire controller..
 	 */
-	public static void rumbleEntireController(float strength)
-	{
+	public static void rumbleEntireController(float strength) {
 		strength = clamp(strength);
 		for (String s : currentController.getRumblerNames())
 			currentController.setRumblerStrength(s, strength);
 	}
-	
-	public static Collection<String> getRumblerNames()
-	{
+
+	public static Collection<String> getRumblerNames() {
 		return currentController.getRumblerNames();
 	}
-	
+
 	/* GENERIC RUMBLER METHODS */
-	
+
 	/**
 	 * Sets rumbling at the given strength.
 	 */
-	public static void rumbleController(Controller controller, String name, float strength)
-	{
+	public static void rumbleController(Controller controller, String name, float strength) {
 		controller.setRumblerStrength(name, clamp(strength));
 	}
-	
+
 	/**
 	 * Sets rumbling at the given strength for the entire controller..
 	 */
-	public static void rumbleEntireController(Controller controller, float strength)
-	{
+	public static void rumbleEntireController(Controller controller, float strength) {
 		strength = clamp(strength);
 		for (String s : controller.getRumblerNames())
 			controller.setRumblerStrength(s, strength);
 	}
-	
-	public static Collection<String> getRumblerNames(Controller controller)
-	{
+
+	public static Collection<String> getRumblerNames(Controller controller) {
 		return controller.getRumblerNames();
 	}
-	
+
 	/* AXIS ENUMS */
-	
+
 	public enum Side {
 		L, R
 	}
-	
+
 	public enum Axis {
 		X, Y
 	}
-	
+
 	/* INITIALIZATION AND POLLING */
-	
+
 	/**
 	 * Update the collection of and poll the {@link Controller}s available.
+	 * 
 	 * @see org.lwjgl.opengl.Display#pollDevices
 	 */
 	public static void poll() {
-		if (created)
-		{
+		if (created) {
 			Iterator<JInputController> iter = controllers.values().iterator();
 			JInputController controller;
 			String names = "";
 			boolean didRemove = false;
-			while (iter.hasNext()) if (!(controller = iter.next()).poll())
-			{
-				iter.remove();
-				didRemove = true;
-				names += controller.getName() + ", ";
-			}
-			if (didRemove) logger.warning("Removed unplugged/invalid controllers: " + names.substring(0,names.length()-2) + ". If a wanted device is plugged back in, make sure to refresh devices.");
+			while (iter.hasNext())
+				if (!(controller = iter.next()).poll()) {
+					iter.remove();
+					didRemove = true;
+					names += controller.getName() + ", ";
+				}
+			if (didRemove)
+				logger.warning("Removed unplugged/invalid controllers: " + names.substring(0, names.length() - 2) + ". If a wanted device is plugged back in, make sure to refresh devices.");
 		}
 	}
 
 	/**
-	 * Clears the List of {@link ControllerEvent}s. Call this once done using the events on that pass.
+	 * Clears the List of {@link ControllerEvent}s. Call this once done using the
+	 * events on that pass.
 	 */
-	public static void clearEvents()
-	{
+	public static void clearEvents() {
 		events.clear();
-		if (currControllerEvents.size() > 0) currControllerEvents.clear();
+		if (currControllerEvents.size() > 0)
+			currControllerEvents.clear();
 	}
-	
+
 	/**
 	 * @return True if Controllers has been created
 	 */
@@ -563,33 +509,26 @@ public class Controllers {
 			events.add(event);
 		}
 	}
-	
+
 	/**
-	 * Creates the JInput Controllers.
-	 * Due to JInput limitations, to refresh controllers, call {@link #refreshDevices()}
+	 * Creates the JInput Controllers. Due to JInput limitations, to refresh
+	 * controllers, call {@link #refreshDevices()}
 	 */
-	public static void create() throws LWJGLException
-	{
-		if (!created)
-		{
+	public static void create() throws LWJGLException {
+		if (!created) {
 			try {
 				net.java.games.input.Controller[] found = getEnvironment().getControllers();
-				for ( net.java.games.input.Controller c : found ) {
-					if(c.getType() == net.java.games.input.Controller.Type.GAMEPAD)
+				for (net.java.games.input.Controller c : found) {
+					if (c.getType() == net.java.games.input.Controller.Type.GAMEPAD)
 						createController(c);
 				}
-				
-				Field f = ControllerEnvironment.getDefaultEnvironment().getClass().getDeclaredField("log");
-		        f.setAccessible(true);
-		        ((Logger)f.get(null)).setLevel(Level.OFF);
-		        f.setAccessible(false);
 			} catch (Throwable e) {
-				throw new LWJGLException("Failed to initialize controllers.",e);
+				throw new LWJGLException("Failed to initialize controllers.", e);
 			}
 			created = true;
 		}
 	}
-	
+
 	/**
 	 * Utility to create a controller based on its potential sub-controllers
 	 *
@@ -599,46 +538,44 @@ public class Controllers {
 		net.java.games.input.Controller[] subControllers = c.getControllers();
 		if (subControllers == null || subControllers.length == 0) {
 			JInputController controller;
-			controllers.put((controller = new JInputController(c)).getName(),controller);
+			controllers.put((controller = new JInputController(c)).getName(), controller);
 		} else {
-			for ( net.java.games.input.Controller sub : subControllers ) {
+			for (net.java.games.input.Controller sub : subControllers) {
 				createController(sub);
 			}
 		}
 	}
-	
+
 	/**
-	 * Refreshes the devices available. WARNING: Very expensive operation! Should be used sparingly.
+	 * Refreshes the devices available. WARNING: Very expensive operation! Should be
+	 * used sparingly.
 	 */
-	public static void refreshDevices() throws LWJGLException
-	{
-		if (created)
-		{
+	public static void refreshDevices() throws LWJGLException {
+		if (created) {
 			try {
 				net.java.games.input.Controller[] found = getEnvironment().getControllers();
-				for ( net.java.games.input.Controller c : found ) {
-					if(!controllers.containsKey(c.getName()) && c.getType() == net.java.games.input.Controller.Type.GAMEPAD)
+				for (net.java.games.input.Controller c : found) {
+					if (!controllers.containsKey(c.getName()) && c.getType() == net.java.games.input.Controller.Type.GAMEPAD)
 						createController(c);
 				}
 			} catch (Throwable e) {
-				throw new LWJGLException("Failed to initialize controllers.",e);
+				throw new LWJGLException("Failed to initialize controllers.", e);
 			}
 		}
 	}
-	
+
 	private static Constructor<ControllerEnvironment> envConstructor;
 	private static boolean customEnvironmentAssigned = false;
-	
+
 	/**
-	 * Allows the API to register using other custom JInput plugins. Assign the constructor <b>before</b> calling {@link #create}
+	 * Allows the API to register using other custom JInput plugins. Assign the
+	 * constructor <b>before</b> calling {@link #create}
 	 */
-	public static void assignEnvironemnt(Constructor<? extends ControllerEnvironment> desiredConstructor)
-	{
+	public static void assignEnvironemnt(Constructor<? extends ControllerEnvironment> desiredConstructor) {
 		envConstructor = (Constructor<ControllerEnvironment>) desiredConstructor;
 	}
-	
-	private static ControllerEnvironment getEnvironment() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
-	{
+
+	private static ControllerEnvironment getEnvironment() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if (customEnvironmentAssigned)
 			return envConstructor.newInstance();
 		else if (osName.startsWith("win"))
@@ -650,25 +587,27 @@ public class Controllers {
 		else
 			return envConstructor.newInstance();
 	}
-	
+
 	private static String osName;
-	
+
 	static {
-        logger = Logger.getLogger(Controllers.class.getName());
-        Logger.getLogger(ControllerEnvironment.class.getName()).setLevel(Level.OFF);
-        try {
-        	osName = System.getProperty("os.name").toLowerCase().trim();
-        	if (osName.startsWith("win") || osName.equals("mac os x") || osName.equals("linux"))
-        		envConstructor = null;
-        	else
-            	(envConstructor = (Constructor<ControllerEnvironment>) ControllerEnvironment.getDefaultEnvironment().getClass().getDeclaredConstructors()[0]).setAccessible(true);
-        } catch (Exception e) {throw new RuntimeException(e);}
+		logger = Logger.getLogger(Controllers.class.getName());
+		System.setProperty("jinput.loglevel","OFF");
+		Logger.getLogger(ControllerEnvironment.class.getName()).setLevel(Level.OFF);
+		try {
+			osName = System.getProperty("os.name").toLowerCase().trim();
+			if (osName.startsWith("win") || osName.equals("mac os x") || osName.equals("linux"))
+				envConstructor = null;
+			else
+				(envConstructor = (Constructor<ControllerEnvironment>) ControllerEnvironment.getDefaultEnvironment().getClass().getDeclaredConstructors()[0]).setAccessible(true);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
-	
+
 	/* MISCELLANEOUS */
-	
-	private static float clamp(float f)
-	{
-		return f > 1.0F ? 1.0F : (f < -1.0F ? - 1.0F : f);
+
+	private static float clamp(float f) {
+		return f > 1.0F ? 1.0F : (f < -1.0F ? -1.0F : f);
 	}
 }
